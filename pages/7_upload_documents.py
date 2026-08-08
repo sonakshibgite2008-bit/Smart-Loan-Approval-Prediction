@@ -30,7 +30,7 @@ with engine.begin() as connection:
     connection.execute(
         text("""
             CREATE TABLE IF NOT EXISTS user_documents (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 file_name TEXT NOT NULL,
                 file_path TEXT NOT NULL,
