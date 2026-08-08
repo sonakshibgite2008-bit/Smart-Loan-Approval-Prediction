@@ -1,7 +1,7 @@
 import streamlit as st
+import pandas as pd
 from database import engine
 from sqlalchemy import text
-
 
 st.set_page_config(
     page_title="Registered Users",
@@ -9,54 +9,100 @@ st.set_page_config(
     layout="wide"
 )
 
-
 st.title("👥 Registered Users")
-
+st.caption("View all users who have registered in the system.")
 
 try:
 
     with engine.connect() as conn:
-
         users = conn.execute(
             text("""
-                SELECT 
+                SELECT
                     id,
                     full_name,
                     email,
-                    phone,
-                    created_at
+                    phone
                 FROM users
                 ORDER BY id DESC
             """)
         ).mappings().all()
 
+    total_users = len(users)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric(
+            label="👥 Total Registered Users",
+            value=total_users
+        )
+
+    with col2:
+        st.metric(
+            label="📊 User Records",
+            value=total_users
+        )
+
+    st.divider()
 
     if users:
 
-        st.success(f"Total Registered Users: {len(users)}")
+        df = pd.DataFrame(users)
 
+        search = st.text_input(
+            "🔍 Search User",
+            placeholder="Search by name, email or phone..."
+        )
 
-        for user in users:
+        if search:
 
-            with st.container():
+            search = search.lower()
 
-                st.markdown(
-                    f"""
-                    ### 👤 {user['full_name']}
+            df = df[
+                df["full_name"].astype(str).str.lower().str.contains(search)
+                |
+                df["email"].astype(str).str.lower().str.contains(search)
+                |
+                df["phone"].astype(str).str.lower().str.contains(search)
+            ]
 
-                    📧 Email: {user['email']}  
-                    📱 Phone: {user['phone']}  
-                    🕒 Registered: {user['created_at']}
-                    """
-                )
+        st.subheader("📋 Registered Users List")
 
-                st.divider()
+        if len(df) > 0:
+
+            df = df.rename(
+                columns={
+                    "id": "User ID",
+                    "full_name": "Full Name",
+                    "email": "Email",
+                    "phone": "Phone"
+                }
+            )
+
+            st.dataframe(
+                df,
+                use_container_width=True,
+                hide_index=True
+            )
+
+            st.success(
+                f"Showing {len(df)} registered user(s)."
+            )
+
+        else:
+
+            st.warning(
+                "No users found matching your search."
+            )
 
     else:
 
-        st.info("No users registered yet.")
-
+        st.info(
+            "No users registered yet."
+        )
 
 except Exception as e:
 
-    st.error(e)
+    st.error(
+        f"Unable to load registered users: {e}"
+    )

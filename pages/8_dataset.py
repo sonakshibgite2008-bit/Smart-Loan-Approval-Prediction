@@ -10,7 +10,7 @@ st.set_page_config(
 
 st.title("📄 Loan Dataset Analysis")
 
-DATA_PATH = "dataset/load_dataset.csv"
+DATA_PATH = "dataset/loan_approval_dataset.csv"
 
 if os.path.exists(DATA_PATH):
 

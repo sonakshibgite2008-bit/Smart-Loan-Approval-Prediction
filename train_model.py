@@ -7,11 +7,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
+DATA_PATH = "dataset/loan_approval_dataset.csv"
 
-# Dataset path
-DATA_PATH = "dataset/load_dataset.csv"
-
-# Load dataset
 df = pd.read_csv(DATA_PATH)
 
 print("Dataset Loaded Successfully")

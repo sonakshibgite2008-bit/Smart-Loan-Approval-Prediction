@@ -1,10 +1,25 @@
 import os
+import streamlit as st
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_NAME = os.getenv("DB_NAME", "loan_prediction_db")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 
+def _get_setting(key):
+    try:
+        return st.secrets[key]
+    except Exception:
+        return os.environ.get(key)
+
+
+# Database Configuration
+DB_HOST = _get_setting("DB_HOST")
+DB_PORT = _get_setting("DB_PORT")
+DB_NAME = _get_setting("DB_NAME")
+DB_USER = _get_setting("DB_USER")
+DB_PASSWORD = _get_setting("DB_PASSWORD")
+
+
+# Groq API Configuration
+GROQ_API_KEY = _get_setting("GROQ_API_KEY")
+
+
+# Application Configuration
 APP_NAME = "Smart Loan Approval Prediction System"
-

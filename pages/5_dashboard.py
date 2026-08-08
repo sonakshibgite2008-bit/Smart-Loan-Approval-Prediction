@@ -50,7 +50,7 @@ try:
             text("""
             SELECT *
             FROM prediction_history
-            ORDER BY created_at DESC
+            ORDER BY id DESC
             """),
             conn
         )
